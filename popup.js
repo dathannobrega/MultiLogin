@@ -1,31 +1,32 @@
-document.addEventListener('DOMContentLoaded', function() {
-    loadUrls();
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('openUrls').addEventListener('click', openUrls);
+    document.getElementById('restoreTabs').addEventListener('click', restoreTabs);
+    document.getElementById('clearAndRestoreTabs').addEventListener('click', clearAndRestoreTabs);
+
+    // Carregar URLs salvas ao carregar o popup
+    chrome.storage.local.get(['savedUrls'], function (result) {
+        if (result.savedUrls) {
+            document.getElementById('urls').value = result.savedUrls.join('\n');
+        }
+    });
 });
 
-document.getElementById('openUrls').addEventListener('click', function() {
-    const urlList = document.getElementById('urlList').value.split('\n').map(url => url.trim()).filter(url => url);
-    saveUrls(urlList);
-    chrome.runtime.sendMessage({ type: 'openUrls', urls: urlList });
-});
-
-document.getElementById('restoreTabs').addEventListener('click', function() {
-    chrome.runtime.sendMessage({ type: 'restoreTabs' });
-});
-
-document.getElementById('clearAndRestore').addEventListener('click', function() {
-    chrome.runtime.sendMessage({ type: 'clearAndRestore' });
-});
-
-function saveUrls(urls) {
-    chrome.storage.local.set({ savedUrls: urls }, function() {
-        console.log('URLs saved');
+function openUrls() {
+    console.log('Abrindo URLs...');
+    const urls = document.getElementById('urls').value.split('\n').map(url => url.trim()).filter(url => url);
+    console.log('URLs:', urls);
+    chrome.storage.local.set({ savedUrls: urls }); // Salvar URLs localmente
+    chrome.runtime.sendMessage({ type: 'openUrls', urls: urls }, function(response) {
+        console.log('Resposta do background:', response);
     });
 }
 
-function loadUrls() {
-    chrome.storage.local.get(['savedUrls'], function(result) {
-        if (result.savedUrls) {
-            document.getElementById('urlList').value = result.savedUrls.join('\n');
-        }
-    });
+function restoreTabs() {
+    console.log('Restaurando abas...');
+    chrome.runtime.sendMessage({ type: 'restoreTabs' });
+}
+
+function clearAndRestoreTabs() {
+    console.log('Limpando e restaurando abas...');
+    chrome.runtime.sendMessage({ type: 'clearAndRestore' });
 }
