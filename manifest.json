@@ -1,29 +1,17 @@
 {
   "manifest_version": 2,
-  "name": "Multi-Login SOC",
-  "version": "1.0.3",
+  "name": "MultiLogin",
+  "version": "1.0.26",
   "description": "__MSG_appDesc__",
   "background": {
-    "page": "background.html"
+    "page": "background.html",
+    "persistent": true
   },
   "browser_action": {
     "default_icon": "icon_128.png",
     "default_title": "New unique Tab",
     "default_popup": "popup.html"
   },
-  "content_scripts": [
-    {
-      "all_frames": true,
-      "js": [
-        "content.min.js"
-      ],
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ],
-      "run_at": "document_start"
-    }
-  ],
   "permissions": [
     "contextMenus",
     "cookies",
@@ -33,7 +21,8 @@
     "https://*/*",
     "webRequest",
     "webRequestBlocking",
-    "webNavigation"
+    "webNavigation",
+    "windows"
   ],
   "content_security_policy": "script-src 'self' https://www.google-analytics.com; object-src 'self'",
   "icons": {
